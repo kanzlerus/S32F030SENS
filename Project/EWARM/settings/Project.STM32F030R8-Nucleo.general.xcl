@@ -1,0 +1,15 @@
+"D:\IAR Systems\Embedded Workbench 7.5\arm\bin\armproc.dll" 
+
+"D:\IAR Systems\Embedded Workbench 7.5\arm\bin\armjlink2.dll" 
+
+"E:\!!!Work\S32F030SENS_SOFT\S32F030SENS\Project\EWARM\STM32F030R8-Nucleo\Exe\Project.out" 
+
+--plugin "D:\IAR Systems\Embedded Workbench 7.5\arm\bin\armbat.dll" 
+
+--device_macro "D:\IAR Systems\Embedded Workbench 7.5\arm\config\debugger\ST\STM32F0xx.dmac" 
+
+--flash_loader "D:\IAR Systems\Embedded Workbench 7.5\arm\config\flashloader\ST\FlashSTM32F03xx6.board" 
+
+
+
+
