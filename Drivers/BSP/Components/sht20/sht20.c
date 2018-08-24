@@ -86,6 +86,7 @@ TSENSOR_DrvTypeDef SHT20Drv =
   SHT20_IsReady,
   SHT20_ReadStatus,
   SHT20_ReadTemp,
+  SHT20_ReadHumidity,
 };
 
 /**
@@ -113,20 +114,11 @@ TSENSOR_DrvTypeDef SHT20Drv =
   */
 void SHT20_Init(uint16_t DeviceAddr, TSENSOR_InitTypeDef *pInitStruct)
 {  
-  uint8_t confreg = 0;
-  uint16_t tempreg = 0;
+  uint8_t  confreg = 0x02;  
 
   /* Set the Configuration Register */
-  confreg = (uint8_t)(pInitStruct->AlertMode | pInitStruct->ConversionMode);
-  TSENSOR_IO_Write(DeviceAddr, &confreg, LM75_REG_CONF, 1);
-
-  /* Set the Temperature Registers */
-  /* Keep the sign bit and shift the temperature value (as given value is integer, the 0.5 digit is not set) */
-  tempreg = (((pInitStruct->TemperatureLimitHigh & 0x007F) << 8) | (pInitStruct->TemperatureLimitHigh & 0x8000));
-  TSENSOR_IO_Write(DeviceAddr, (uint8_t*)(&tempreg), LM75_REG_TOS, 2);
-
-  tempreg = (((pInitStruct->TemperatureLimitLow & 0x007F) << 8) | (pInitStruct->TemperatureLimitLow & 0x8000));
-  TSENSOR_IO_Write(DeviceAddr, (uint8_t*)(&tempreg), LM75_REG_THYS, 2);
+  confreg = confreg | pInitStruct->ConversionResolution;
+  TSENSOR_IO_Write(DeviceAddr, &confreg, SHT20_REG_WRITEUSER, 1);  
 }
 
 /**
@@ -154,30 +146,66 @@ uint8_t SHT20_ReadStatus(uint16_t DeviceAddr)
   uint8_t tmp = 0;
 
   /* Read Status register */
-  TSENSOR_IO_Read(DeviceAddr, &tmp, LM75_REG_CONF, 1);
+  TSENSOR_IO_Read(DeviceAddr, &tmp, SHT20_REG_READUSER, 1);
 
   /* Return Temperature Sensor Status */
   return (uint8_t)(tmp);
 }
 
 /**
-  * @brief  Read ID address of STLM75
+  * @brief  Read ID address of SHT20, Temperature
   * @param  DeviceAddr : Device ID address.
   * @retval ID name
   */
-uint16_t SHT20_ReadTemp(uint16_t DeviceAddr)
+uint16_t SHT20_ReadTemp(uint16_t DeviceAddr, uint8_t hold)
 {
   uint16_t tempreg = 0;
-  uint16_t tmp = 0;
+  //uint16_t tmp = 0;
 
   /* Read Temperature registers */
-  TSENSOR_IO_Read(DeviceAddr, (uint8_t*)(&tempreg), LM75_REG_TEMP, 2);
+  switch(hold)
+  {
+    case HOLD: 
+      TSENSOR_IO_Read(DeviceAddr, (uint8_t*)(&tempreg), SHT20_REG_TEMP_HOLD, 2);
+    break;
+    case NOHOLD:
+      TSENSOR_IO_Read(DeviceAddr, (uint8_t*)(&tempreg), SHT20_REG_TEMP_NOHOLD, 2);
+    break;
+  }
   
-  tmp = ((tempreg & 0x00FF) << 8) | ((tempreg & 0xFF00) >> 8);
-  tempreg = (((tmp & 0x7F80) >> 7) | (tmp & 0x8000));
+  //tmp = ((tempreg & 0x00FF) << 8) | ((tempreg & 0xFF00) >> 8);
+  //tempreg = (((tmp & 0x7F80) >> 7) | (tmp & 0x8000));
 
   /* Return Temperature value */
   return (tempreg);
+}
+
+/**
+  * @brief  Read ID address of SHT20, Humidity
+  * @param  DeviceAddr : Device ID address.
+  * @retval ID name
+  */
+uint16_t SHT20_ReadHumidity(uint16_t DeviceAddr, uint8_t hold)
+{
+  uint16_t humreg = 0;
+  //uint16_t tmp = 0;
+
+  /* Read Humidity registers */
+  switch(hold)
+  {
+    case HOLD: 
+      TSENSOR_IO_Read(DeviceAddr, (uint8_t*)(&humreg), SHT20_REG_TEMP_HOLD, 2);
+    break;
+    case NOHOLD:
+      TSENSOR_IO_Read(DeviceAddr, (uint8_t*)(&humreg), SHT20_REG_TEMP_NOHOLD, 2);
+    break;
+  }
+  
+  //tmp = ((humreg & 0x00FF) << 8) | ((humreg & 0xFF00) >> 8);
+  //humreg = (((tmp & 0x7F80) >> 7) | (tmp & 0x8000));
+
+  /* Return Humidity value */
+  return (humreg);
 }
 /**
   * @}

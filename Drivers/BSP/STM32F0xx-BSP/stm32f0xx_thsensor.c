@@ -58,23 +58,13 @@
   */
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32072b_eval_tsensor.h"
+#include "stm32f0xx_thsensor.h"
 
 /** @addtogroup BSP
   * @{
   */
 
-/** @addtogroup STM32072B_EVAL
-  * @{
-  */
-
-/** @addtogroup STM32072B_EVAL_TSENSOR
-  * @brief      This file includes the STLM75 Temperature Sensor driver of 
-  *             STM32072B-EVAL boards.
-  * @{
-  */ 
-
-/** @defgroup STM32072B_EVAL_TSENSOR_Private_Variables Private Variables
+/** @defgroup S32F030SENS_Private_Variables Private Variables
   * @{
   */ 
 static TSENSOR_DrvTypeDef  *tsensor_drv; 
@@ -84,7 +74,7 @@ __IO uint16_t  TSENSORAddress = 0;
   * @}
   */ 
 
-/** @addtogroup STM32072B_EVAL_TSENSOR_Exported_Functions
+/** @addtogroup S32F030SENS_Exported_Functions
   * @{
   */ 
 
@@ -95,44 +85,28 @@ __IO uint16_t  TSENSORAddress = 0;
 uint32_t BSP_TSENSOR_Init(void)
 { 
   uint8_t ret = TSENSOR_ERROR;
-  TSENSOR_InitTypeDef STLM75_InitStructure;
+  TSENSOR_InitTypeDef SHT20_InitStructure;
 
   /* Temperature Sensor Initialization */
-  if(Stlm75Drv.IsReady(TSENSOR_I2C_ADDRESS_A01, TSENSOR_MAX_TRIALS) == HAL_OK)
+  if(SHT20Drv.IsReady(TSENSOR_I2C_ADDRESS, TSENSOR_MAX_TRIALS) == HAL_OK)
   {
     /* Initialize the temperature sensor driver structure */
-    TSENSORAddress = TSENSOR_I2C_ADDRESS_A01;
-    tsensor_drv = &Stlm75Drv;
+    TSENSORAddress = TSENSOR_I2C_ADDRESS;
+    tsensor_drv = &SHT20Drv;
 
     ret = TSENSOR_OK;
   }
   else
   {
-    if(Stlm75Drv.IsReady(TSENSOR_I2C_ADDRESS_A02, TSENSOR_MAX_TRIALS) == HAL_OK)
-    {
-      /* Initialize the temperature sensor driver structure */
-      TSENSORAddress = TSENSOR_I2C_ADDRESS_A02;
-      tsensor_drv = &Stlm75Drv;
-
-      ret = TSENSOR_OK;
-    }
-    else
-    {
-      ret = TSENSOR_ERROR;
-    }
+    ret = TSENSOR_ERROR;    
   }
 
-  if (ret == TSENSOR_OK)
-  {
-    /* Configure Temperature Sensor : Conversion 9 bits in continuous mode */
-    /* Alert outside range Limit Temperature 12° <-> 24°c */
-    STLM75_InitStructure.AlertMode             = STLM75_INTERRUPT_MODE;
-    STLM75_InitStructure.ConversionMode        = STLM75_CONTINUOUS_MODE;
-    STLM75_InitStructure.TemperatureLimitHigh  = 24;
-    STLM75_InitStructure.TemperatureLimitLow   = 12;
+  if(ret == TSENSOR_OK)
+  {  
+    SHT20_InitStructure.ConversionResolution  = SHT20_MEASUREMENT_RESOLUTION_12_14BIT;    
         
     /* TSENSOR Init */   
-    tsensor_drv->Init(TSENSORAddress, &STLM75_InitStructure);
+    tsensor_drv->Init(TSENSORAddress, &SHT20_InitStructure);
 
     ret = TSENSOR_OK;
   }
@@ -150,13 +124,21 @@ uint8_t BSP_TSENSOR_ReadStatus(void)
 }
 
 /**
-  * @brief  Read Temperature register of STLM75.
-  * @retval STLM75 measured temperature value.
+  * @brief  Read Temperature register of SHT20.
+  * @retval SHT20 measured temperature value.
   */
-uint16_t BSP_TSENSOR_ReadTemp(void)
+uint16_t BSP_TSENSOR_ReadTemp(uint8_t hold)
 { 
-  return tsensor_drv->ReadTemp(TSENSORAddress);
+  return tsensor_drv->ReadTemp(TSENSORAddress, hold);  
+}
 
+/**
+  * @brief  Read Humidity register of SHT20.
+  * @retval SHT20 measured humidity value.
+  */
+uint16_t BSP_TSENSOR_ReadHumidity(uint8_t hold)
+{ 
+  return tsensor_drv->ReadHumidity(TSENSORAddress, hold);  
 }
 
 /**

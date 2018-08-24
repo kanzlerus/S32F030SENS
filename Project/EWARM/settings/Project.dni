@@ -123,7 +123,7 @@ TraceBufferSize=0x00000000
 TraceShowTime=0
 TraceShowTimeFreq=1000000
 [DebugChecksum]
-Checksum=-1048890008
+Checksum=-267532018
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -140,9 +140,6 @@ ShowSource=1
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
 [DriverProfiling]
 Enabled=0
 Mode=1
@@ -160,3 +157,6 @@ Count=0
 [Aliases]
 Count=0
 SuppressDialog=0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""

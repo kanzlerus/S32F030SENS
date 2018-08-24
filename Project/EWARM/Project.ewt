@@ -1176,6 +1176,9 @@
         <file>
           <name>$PROJ_DIR$\..\..\Drivers\BSP\STM32F0xx-BSP\stm32f0xx_bsp.c</name>
         </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\Drivers\BSP\STM32F0xx-BSP\stm32f0xx_thsensor.c</name>
+        </file>
       </group>
     </group>
     <group>

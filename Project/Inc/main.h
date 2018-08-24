@@ -40,7 +40,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f0xx_hal.h"
 #include "stm32f0xx_bsp.h"
-#include "stm32f0xx_usonic.h"
+#include "stm32f0xx_thsensor.h"
 
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/

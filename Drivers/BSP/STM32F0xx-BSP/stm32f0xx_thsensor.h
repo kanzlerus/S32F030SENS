@@ -43,8 +43,8 @@
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32072b_eval.h"
-#include "../Components/stlm75/stlm75.h"   
+#include "stm32f0xx_bsp.h"
+#include "../Components/sht20/sht20.h"   
 
 /** @addtogroup BSP
   * @{
@@ -79,8 +79,7 @@ typedef enum
   * @{
   */
 /* Temperature Sensor hardware I2C address */ 
-#define TSENSOR_I2C_ADDRESS_A01 0x90
-#define TSENSOR_I2C_ADDRESS_A02 0x92
+#define TSENSOR_I2C_ADDRESS     0x80
 
 /* Maximum number of trials use for STTS751_IsReady function */
 #define TSENSOR_MAX_TRIALS      50
@@ -94,7 +93,8 @@ typedef enum
   */
 uint32_t BSP_TSENSOR_Init(void);
 uint8_t  BSP_TSENSOR_ReadStatus(void);
-uint16_t BSP_TSENSOR_ReadTemp(void);
+uint16_t BSP_TSENSOR_ReadTemp(uint8_t hold);
+uint16_t BSP_TSENSOR_ReadHumidity(uint8_t hold);
 
 /**
   * @}

@@ -78,6 +78,8 @@ int main(void)
   
   /* UltraSonic Sensor Init */
   BSP_US_Init();
+  /* Temp\Humidity Sensor Init */
+  BSP_TSENSOR_Init();
   
   /* Infinite loop */
   while (1)
